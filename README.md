@@ -1,6 +1,5 @@
-# ai_task_planner
-bash
-cat > README.md << 'EOF'
+[![CI](https://github.com/dgapchenko4/ai-task-planner-final/actions/workflows/ci.yml/badge.svg)](https://github.com/dgapchenko4/ai-task-planner-final/actions/workflows/ci.yml)
+
 # 🤖 AI Task Planner — Умный планировщик задач
 
 Дипломный проект. Веб-приложение для управления задачами с AI-ассистентом на основе Yandex GPT.
