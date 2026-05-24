@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Task Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- АВТОРИЗАЦИЯ -->
+<div id="auth-page" class="page active">
+    <div class="auth-box">
+        <h2>🤖 AI Task Planner</h2>
+        <div id="login-form">
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Пароль">
+            <button onclick="doLogin()">Войти</button>
+            <p class="error" id="login-error"></p>
+            <p class="auth-switch">Нет аккаунта? <span class="link" onclick="showForm('register')">Регистрация</span></p>
+        </div>
+        <div id="register-form" style="display:none;">
+            <input type="text" id="reg-user" placeholder="Логин">
+            <input type="text" id="reg-first" placeholder="Имя">
+            <input type="text" id="reg-last" placeholder="Фамилия">
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-pass1" placeholder="Пароль">
+            <input type="password" id="reg-pass2" placeholder="Повторите пароль">
+            <button onclick="doRegister()">Зарегистрироваться</button>
+            <p class="error" id="reg-error"></p>
+            <p class="auth-switch">Есть аккаунт? <span class="link" onclick="showForm('login')">Войти</span></p>
+        </div>
+    </div>
+</div>
+
+<!-- ПРИЛОЖЕНИЕ -->
+<div id="app-page" class="page">
+    <div class="sidebar">
+        <h3>🤖 AI Planner</h3>
+        <button class="tab-btn active" onclick="showTab('dash')">📊 Дашборд</button>
+        <button class="tab-btn" onclick="showTab('tasks')">📋 Задачи</button>
+        <button class="tab-btn" onclick="showTab('cal')">📅 Календарь</button>
+        <button class="tab-btn" onclick="showTab('settings')">⚙️ Настройки</button>
+        
+        <div class="tag-filter">
+            <span class="tag-title">🏷 Теги:</span>
+            <div id="tags-list"></div>
+            <span class="tag-clear" onclick="clearFilter()">✕ Сбросить</span>
+        </div>
+        
+        <button class="btn-logout" onclick="doLogout()">🚪 Выйти</button>
+    </div>
+    
+    <div class="content">
+        <!-- Дашборд -->
+        <div id="tab-dash" class="tab-content">
+            <div class="page-header">
+                <h2>📊 Дашборд</h2>
+                <button class="add-btn" onclick="openModal()">+ Новая задача</button>
+            </div>
+            <div id="stats"></div>
+            <h4 style="margin-bottom:12px;">📌 Последние задачи</h4>
+            <div id="recent-tasks"></div>
+        </div>
+        
+        <!-- Задачи -->
+        <div id="tab-tasks" class="tab-content" style="display:none;">
+            <div class="page-header">
+                <h2>📋 Задачи <span id="filter-info"></span></h2>
+                <button class="add-btn" onclick="openModal()">+ Новая задача</button>
+            </div>
+            <div id="all-tasks"></div>
+        </div>
+        
+        <!-- Календарь -->
+        <div id="tab-cal" class="tab-content" style="display:none;">
+            <div class="page-header">
+                <h2>📅 Календарь</h2>
+                <button class="add-btn" onclick="openModal()">+ Новая задача</button>
+            </div>
+            <div id="calendar"></div>
+        </div>
+        
+        <!-- Настройки -->
+        <div id="tab-settings" class="tab-content" style="display:none;">
+            <h2>⚙️ Настройки</h2>
+            
+            <div class="settings-card">
+                <h4>🎨 Тема оформления</h4>
+                <label class="switch-label">
+                    <input type="checkbox" id="set-theme" onchange="toggleTheme()"> 
+                    <span>Светлая тема</span>
+                </label>
+            </div>
+            
+            <div class="settings-card">
+                <h4>📧 Email уведомления</h4>
+                <label class="switch-label">
+                    <input type="checkbox" id="set-email" onchange="saveSettings()"> 
+                    <span>Включить уведомления на почту</span>
+                </label>
+            </div>
+            
+            <div class="settings-card">
+                <h4>🌅 Утренняя сводка</h4>
+                <label class="switch-label">
+                    <input type="checkbox" id="set-morning" onchange="saveSettings()"> 
+                    <span>Присылать утреннюю сводку задач</span>
+                </label>
+                <label class="time-label">
+                    <span>Время:</span>
+                    <input type="time" id="set-morning-time" onchange="saveSettings()" value="08:00">
+                </label>
+            </div>
+            
+            <div class="settings-card">
+                <h4>⏰ Напоминания</h4>
+                <label class="time-label">
+                    <span>Напоминать за</span>
+                    <select id="set-reminder" onchange="saveSettings()">
+                        <option value="5">5 минут</option>
+                        <option value="15">15 минут</option>
+                        <option value="30" selected>30 минут</option>
+                        <option value="60">1 час</option>
+                        <option value="120">2 часа</option>
+                    </select>
+                    <span>до задачи</span>
+                </label>
+            </div>
+            
+            <p id="settings-saved">✅ Настройки сохранены</p>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО -->
+<div id="modal" class="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="modal-title">📝 Новая задача</h3>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="edit-id">
+            <div class="form-field">
+                <label>Заголовок *</label>
+                <input type="text" id="task-title" placeholder="Опишите задачу...">
+            </div>
+            <div class="form-field">
+                <label>Описание</label>
+                <textarea id="task-desc" placeholder="Детали..."></textarea>
+            </div>
+            <div class="form-field">
+                <label>Срок (оставьте пустым для автоопределения)</label>
+                <input type="datetime-local" id="task-due">
+            </div>
+            <button class="btn-save" onclick="saveTask()">💾 Сохранить</button>
+            <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/ru.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

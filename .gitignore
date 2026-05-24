@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+*.so
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Django
+*.log
+/media/
+/static/
+db.sqlite3
+
+# Migration files (keep __init__.py)
+*/migrations/0*.py
+!*/migrations/__init__.py
+
+# Test files
+test_*.py
+*_test.py
+
+# Temp
+*.bak
+*.tmp
+*.orig
